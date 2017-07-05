@@ -1,27 +1,24 @@
-//requestをrequire
-var request = require('request');
+const request = require('request');
 
-function echoBot(req, res) {
-  // Example input: {"message": "Hello!"}
-  if (req.body.message === undefined) {
-    // This is an error case, as "message" is required.
+exports.echoBot = function echoBot(req, res) {
+  if (req.body.text === undefined || req.body.text === '') {
+    // テキストがなければエラーを返す
     res.status(400).send('No message defined!');
   } else {
-    // Everything is okay.
-
-    // 環境に応じてurl, channel, botNameを設定
+    // 環境に応じて設定
     var url = '';
     var channel = '';
     var botName = 'Bot';
-    
-    // messageを取得
-    var text = req.body.message;
 
-    //ヘッダーを定義
+    // slash commandの引数を取得
+    var text = req.body.text;
+
+    // ヘッダーを定義
     var headers = {
       'Content-Type': 'application/json',
     };
 
+    // ペイロードを定義
     var payLoad = {
       'channel': channel,
       'username': botName,
@@ -29,18 +26,18 @@ function echoBot(req, res) {
       'icon_emoji': ':ghost:'
     };
 
-    //オプションを定義
+    // オプションを定義
     var options = {
       url: url,
       method: 'POST',
       headers: headers,
       json: payLoad
     };
-    
-    //リクエスト送信
+
+    // リクエスト送信
     request(options, function (error, response, body) {
-      //コールバック処理
+      // コールバック処理
+      res.status(200).send('Success!');
     })
   }
 };
-
